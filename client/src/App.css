@@ -1,0 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=New+Rocker&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+header {
+  z-index: 10001 !important;
+}
+
+.home-container {
+  @apply lg:px-24 md:px-16;
+}
+
+.home-title {
+  @apply md:text-4xl font-bold md:w-1/2 text-2xl text-center;
+}
+
+.home-title-half {
+  @apply md:text-4xl font-bold  text-2xl ;
+}
+
+.home-title-small {
+  @apply md:text-2xl font-bold text-2xl text-center;
+}
+
+.btn-orange {
+  @apply btn bg-orange text-white rounded-full hover:text-black
+}
+
+.btn-blue {
+  @apply btn bg-dark-blue text-white rounded-full hover:text-black
+}
+
+.home-des{
+  @apply mt-4 text-gray-700 text-sm 
+}
+
+.slick-slider {
+  /* background-color: aquamarine; */
+  /* padding-left: 30px; */
+  /* height: 480px !important; */
+}
+
+.z-negative {
+  z-index: -1;
+}
+.slick-prev {
+  z-index: 1;
+  /* background-color: red !important; */
+}
+.slick-next {
+  z-index: 1;
+  /* background-color: red !important; */
+}
+
+.slick-dots li button:before {
+  color: rgb(179, 178, 178) !important;
+  font-size: 10px !important;
+  margin-top: 10px;
+}
+
+.slick-dots li.slick-active button:before {
+  color: white !important;
+  /* font-size: 12px !important; */
+}
