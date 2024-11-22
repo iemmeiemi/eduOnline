@@ -19,7 +19,7 @@ const verifyToken = (req, res, next) => {
 
 const verifyAdmin = async (req, res, next) => {
     const email = req.decoded.email;
-    const query ={email: email};
+    const query = {email: email};
 
     const user = await User.findOne(query);
     const isAdmin = user?.role == 'admin';
@@ -31,9 +31,40 @@ const verifyAdmin = async (req, res, next) => {
     next();
 };
 
+const verifyInstructor = async (req, res, next) => {
+    const email = req.decoded.email;
+    const query ={email: email};
+
+    const user = await User.findOne(query);
+    const isInstructor = user?.role == 'instructor';
+
+    if(!isInstructor){
+        return res.status(403).send({message: "forbidden access!"})
+    }
+
+    next();
+};
+
+const verifySubmin = async (req, res, next) => {
+    const email = req.decoded.email;
+    const query ={email: email};
+
+    const user = await User.findOne(query);
+    const isSubmin = user?.role == 'submin';
+
+    if(!isSubmin){
+        return res.status(403).send({message: "forbidden access!"})
+    }
+
+    next();
+};
+
+
 
 module.exports = {
     verifyToken,
     verifyAdmin,
+    verifySubmin,
+    verifyInstructor,
 
 }

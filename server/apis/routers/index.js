@@ -1,9 +1,12 @@
 const userRouters  = require('../routers/userRouters');
+const authRouters  = require('../routers/authRouters');
+
 const {verifyAdmin} = require('../middlewares/verify');
 
 
 const initRoutes = (app) => {
     app.use('/api/user', userRouters);
+    app.use('/api/auth', authRouters);
     
     app.use('/admin/user', userRouters);
 
