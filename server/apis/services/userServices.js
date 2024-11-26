@@ -20,7 +20,7 @@ const getOneUserByIdFromOther = async (id) => {
     } catch (err) {
         throw new Error(err.message); 
     }
-};
+}; 
 
 const getOneUserByIdFromOwner = async (id) => {
     try {

@@ -12,21 +12,33 @@ const userSchema = new Schema({
     photoURL: String,
     role: {
         type: String,
-        enum: ['user', 'admin', 'instructor', 'submin'],
-        default: 'user',
+        enum: ['student', 'admin', 'instructor', 'submin'],
+        default: 'student',
     },
+    birthdate: Date,
     phone: Number,
     gender: {
         type: String,
         enum: ['male', 'female', 'others'],
         default: 'others',
     },
-    
-    wishlist: {
-        type: [String], 
+    history: {
+        type: [String],
         default: [],
     },
+    createdAt: {
+        type: Date,
+        default: Date.now, // Gán giá trị mặc định là thời điểm hiện tại
+    },
+    deletedAt: {
+        type: Date,
+        default: null, // Gán giá trị mặc định là null
+    },
 
+    wishlist: {
+        type: [String],
+        default: [],
+    },
 });
 
 // create a model instance
