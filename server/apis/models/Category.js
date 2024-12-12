@@ -1,25 +1,12 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
-const rateSchema = require('./children/Rate');
 
 // schema model
-const classSchema = new Schema({
+const categorySchema = new Schema({
     name: String,
     des: String,
-    photoURL: String,
-    category: {
-        type: mongoose.Schema.Types.ObjectId, //?
-        ref: 'Category',
-        required: true,
-    },
-    times: Number, //the class instances
-    students: Number, //the total student attend in
-    rate: Number,
-    rates: {
-        type: [rateSchema], // Mảng tài liệu con
-        default: [], // Gán giá trị mặc định là mảng rỗng
-    },
-    instructor: {
+    photoURL : String,
+    creator: {
         type: mongoose.Schema.Types.ObjectId, // Liên kết với ID của người dùng
         ref: 'User', // Tên model của người dùng
         required: true,
@@ -35,6 +22,6 @@ const classSchema = new Schema({
 });
 
 // create a model instance
-const Class = mongoose.model('Class', classSchema);
+const Category = mongoose.model('Category', categorySchema);
 
-module.exports = Class;
+module.exports = Category;

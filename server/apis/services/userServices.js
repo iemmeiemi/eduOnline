@@ -1,9 +1,25 @@
 const User = require('../models/User');
+const Instructor = require('../models/Instructor');
+const Student = require('../models/Student');
 
-const createUser = async (user) => {
+
+const getOneUserByEmail = async (email) => {
     try {
-        const createdUser = await User.create(user);
-        return createdUser;
+        const user = await User.findOne({ email });
+        if (!user) {
+            throw new Error("User not found");
+        }
+        return user; // Trả về user hợp lệ
+    } catch (err) {
+        throw new Error(err.message); 
+    }
+};
+
+
+const getAllUsers = async (user) => {
+    try {
+        const allUsers = await User.find();
+        return allUsers;
     } catch (err) {
         throw new Error(err.message); 
     }
@@ -12,7 +28,7 @@ const createUser = async (user) => {
 const getOneUserByIdFromOther = async (id) => {
     try {
         const createdUser = await User.findById(id)
-            .select('-password -__v -role -wishlist'); // Loại bỏ password, version key, role và wishlist
+            .select('-__v -role -wishlist'); // Loại bỏ password, version key, role và wishlist
         if (!createdUser) {
             throw new Error('User not found');
         }
@@ -24,7 +40,7 @@ const getOneUserByIdFromOther = async (id) => {
 
 const getOneUserByIdFromOwner = async (id) => {
     try {
-        const createdUser = await User.findById(id).select('-password -__v'); // Loại bỏ password và version key
+        const createdUser = await User.findById(id).select('-__v'); // Loại bỏ password và version key
         if (!createdUser) {
             throw new Error('User not found');
         }
@@ -33,6 +49,18 @@ const getOneUserByIdFromOwner = async (id) => {
         throw new Error(err.message);
     }
 };
+
+// const create = async (user) => {
+//     try {
+//         const updatedUser = await User.findByIdAndUpdate(user.id, user, { new: true, runValidators: true });
+//         if (!updatedUser) {
+//             throw new Error('User not found');
+//         }
+//         return updatedUser;
+//     } catch (err) {
+//         throw new Error(err.message); 
+//     }
+// };
 
 const updateUser = async (user) => {
     try {
@@ -72,7 +100,8 @@ const makeAdmin = async (id) => {
 };
 
 module.exports = {
-    createUser,
+    getOneUserByEmail,
+    getAllUsers,
     getOneUserByIdFromOwner,
     getOneUserByIdFromOther,
     updateUser,

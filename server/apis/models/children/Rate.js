@@ -13,5 +13,4 @@ const rateSchema = new mongoose.Schema({
     },
 });
 
-// Xuất schema
 module.exports = rateSchema;

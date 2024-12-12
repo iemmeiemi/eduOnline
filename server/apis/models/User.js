@@ -10,6 +10,11 @@ const userSchema = new Schema({
         minlength: 3,
     },
     photoURL: String,
+    authMethod: {
+        type: String,
+        enum: ['tradi', 'gg', 'fb'],
+        default: 'tradi',
+    },
     role: {
         type: String,
         enum: ['student', 'admin', 'instructor', 'submin'],
@@ -21,6 +26,10 @@ const userSchema = new Schema({
         type: String,
         enum: ['male', 'female', 'others'],
         default: 'others',
+    },
+    wishlist: {
+        type: [String],
+        default: [],
     },
     history: {
         type: [String],
@@ -35,10 +44,7 @@ const userSchema = new Schema({
         default: null, // Gán giá trị mặc định là null
     },
 
-    wishlist: {
-        type: [String],
-        default: [],
-    },
+    
 });
 
 // create a model instance

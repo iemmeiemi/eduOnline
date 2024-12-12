@@ -5,7 +5,6 @@ import useAuth from "../../hooks/useAuth";
 import { FaRegUser } from "react-icons/fa";
 import Profile from "./Profile";
 
-
 const Navbar = () => {
   const { user, loading } = useAuth();
 
@@ -34,16 +33,16 @@ const Navbar = () => {
       </li>
       <li>
         <details>
-          <summary>Category</summary>
+          <summary>Class</summary>
           <ul className="p-2">
             <li>
-              <a>All</a>
+              <a href="/class">All</a>
             </li>
             <li>
-              <a>Salad</a>
+              <a></a>
             </li>
             <li>
-              <a>Pizza</a>
+              <a></a>
             </li>
           </ul>
         </details>
@@ -53,13 +52,10 @@ const Navbar = () => {
           <summary>Services</summary>
           <ul className="p-2">
             <li>
-              <a>Online Order</a>
+              <a>For Instructors</a>
             </li>
             <li>
-              <a>Table Booking</a>
-            </li>
-            <li>
-              <a>Order Tracking</a>
+              <a>For Students</a>
             </li>
           </ul>
         </details>

@@ -1,5 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { FaFacebookF, FaGithub, FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import useAuth from "../hooks/useAuth";
@@ -24,19 +26,22 @@ const ModalLogin = () => {
   const onSubmit = (data) => {
     const email = data.email;
     const password = data.password;
+    
     reset();
   };
 
   // login with google
-  const handleRegister = () => {
-    signUpWithGmail()
-      .then((res) => {
-        alert("Sign up Successfully!");
-      })
-      .catch((err) => {
-        alert("Sign up Unsuccessfully! Error: \n" + err.message);
-      });
+  const handleRegister = async () => {
+    try {
+      const message = await signUpWithGmail();
+      toast.success(message);
+      document.getElementById("my_modal_5").close();
+    } catch (error) {
+      toast.error( error.message); 
+      console.log(error)
+    }
   };
+  
 
   return (
     <dialog id="my_modal_5" className="modal modal-middle sm:modal-middle">

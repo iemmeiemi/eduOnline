@@ -1,12 +1,12 @@
 const service = require("../services/userServices");
 const { handleResponse } = require('../utils/responseFormat');
+const { validateEmail } = require('../utils/validate'); // Import hàm validate
 
-const createUser = async (req, res) => {
+
+const getAllUsers = async (req, res) => {
     try {
-        const user = req.body.user;
-        const response = await service.createUser(user);
-
-        handleResponse(res, response, 'Created');
+        const response = await service.getAllUsers();
+        handleResponse(res, response);
     } catch (error) {
         handleResponse(res, null, error.message, 500);
     }
@@ -29,6 +29,23 @@ const getOneUserById = async (req, res) => {
     }
 };
 
+const getOneUserByEmail = async (req, res) => {
+    try {
+        const { email } = req.params;
+        if (!email) {
+            return handleResponse(res, null, "Email is required", 400);
+        }
+        if (!validateEmail(email)) {
+            return handleResponse(res, null, "Invalid email format", 400);
+        }
+
+        const response = await service.getOneUserByEmail(email);
+        handleResponse(res, response);
+    } catch (error) {
+        handleResponse(res, null, error.message, 500);
+    }
+};
+
 const updateUser = async (req, res) => {
     try {
         const user = req.body.user;
@@ -40,6 +57,9 @@ const updateUser = async (req, res) => {
     }
 };
 
+
+
+//admin func
 const banUser = async (req, res) => {
     try {
         const id = req.param.id;
@@ -51,8 +71,10 @@ const banUser = async (req, res) => {
     }
 };
 
+
 module.exports = {
-    createUser,
+    getOneUserByEmail,
+    getAllUsers,
     getOneUserById,
 
     updateUser,

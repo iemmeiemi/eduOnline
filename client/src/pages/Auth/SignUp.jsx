@@ -1,9 +1,12 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { FaFacebookF, FaGithub, FaGoogle } from "react-icons/fa";
 import { useForm } from "react-hook-form";
+import useAuth from "../../hooks/useAuth";
 
 const SignUp = () => {
+  const { signUpWithGmail, createUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
@@ -17,6 +20,7 @@ const SignUp = () => {
 
   const onSubmit = (data) => {
     const { password, confirmPassword } = data;
+    const email = data.email;
 
     if (password !== confirmPassword) {
       setError("confirmPassword", {
@@ -25,13 +29,26 @@ const SignUp = () => {
       });
       return; // Ngừng xử lý nếu mật khẩu không khớp
     }
-
     // Nếu mật khẩu khớp, thực hiện logic đăng ký tại đây
-    console.log("Registration successful!", data);
+    signUpWithEmailAndPassword(email, password, data.name)
+      .then((credentialUser) => {
+        // Cập nhật thông tin người dùng
+        navigate(from, { replace: true });
+        toast.success("Account created successfully!");
+      })
+      .catch((error) => {
+        console.error("Error during user creation:", error.message);
+        toast.error("Failed to create account: " + error.message);
+      });
   };
 
-  const handleRegister = () => {
-    // Logic đăng ký với Google, Facebook, GitHub
+  const handleRegister = async () => {
+    try {
+      const message = await signUpWithGmail();
+      toast.success(message);
+    } catch (error) {
+      toast.error("Sign up Unsuccessful! Error:\n" + error.message);
+    }
   };
 
   return (
@@ -39,7 +56,7 @@ const SignUp = () => {
       <div className="mb-5">
         <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
           <h3 className="font-bold text-lg">Please Create An Account!</h3>
-          
+
           {/* Name */}
           <div className="form-control">
             <label className="label">
@@ -51,7 +68,9 @@ const SignUp = () => {
               className="input input-bordered"
               {...register("name", { required: "Name is required" })}
             />
-            {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="text-red-500">{errors.name.message}</p>
+            )}
           </div>
 
           {/* Email */}
@@ -65,7 +84,9 @@ const SignUp = () => {
               className="input input-bordered"
               {...register("email", { required: "Email is required" })}
             />
-            {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="text-red-500">{errors.email.message}</p>
+            )}
           </div>
 
           {/* Password Fields in One Row */}
@@ -81,7 +102,9 @@ const SignUp = () => {
                 className="input input-bordered"
                 {...register("password", { required: "Password is required" })}
               />
-              {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
+              )}
             </div>
 
             {/* Password Again */}
@@ -93,9 +116,13 @@ const SignUp = () => {
                 type="password"
                 placeholder="confirm password"
                 className="input input-bordered"
-                {...register("confirmPassword", { required: "Please confirm your password" })}
+                {...register("confirmPassword", {
+                  required: "Please confirm your password",
+                })}
               />
-              {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword.message}</p>}
+              {errors.confirmPassword && (
+                <p className="text-red-500">{errors.confirmPassword.message}</p>
+              )}
             </div>
           </div>
 

@@ -7,14 +7,15 @@ const {verifyToken, verifyAdmin} = require('../middlewares/verify')
 //common
 router.get('/', userControllers.getAllUsers);
 router.get('/:id', userControllers.getOneUserById);
-router.get('/search', userControllers.searchUser);
-router.post('/', userControllers.createUser);
+router.get('/:email', userControllers.getOneUserByEmail);
+
+// router.get('/search', userControllers.searchUser);
 router.put('/', verifyToken, userControllers.updateUser);
 
 
 
 //admin per
-router.delete('/:id', verifyToken, verifyAdmin, userControllers.banUser);
-router.patch('/:id', verifyToken, verifyAdmin, userControllers.makeAdmin);
+// router.delete('/:id', verifyToken, verifyAdmin, userControllers.banUser);
+// router.patch('/:id', verifyToken, verifyAdmin, userControllers.makeAdmin);
 
 module.exports = router;
