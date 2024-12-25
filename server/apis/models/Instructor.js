@@ -9,12 +9,13 @@ const instructorSchema = new Schema({
         required: true,
     },
     experience: Date,
-    classCount: Number,
-    
+    classCount:  {
+        type: Number,
+        default: 0
+    },
     category: {
         type: mongoose.Schema.Types.ObjectId, //?
         ref: 'Category', 
-        required: true,
     },
 });
 

@@ -3,11 +3,13 @@ const User = require('../models/User');
 
 
 const verifyToken = (req, res, next) => {
+    console.log('Uploaded Files:', req.files);
+
     if(!req.headers.authorization) {
         return res.status(400).send({message: "unauthorize"})
     }
     const token = req.headers.authorization.split(' ')[1];
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded)=> {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded)=> {
         if(err) {
             return res.status(401).send({message: "token is invalid!"})
         }
@@ -26,22 +28,26 @@ const verifyAdmin = async (req, res, next) => {
     if(!isAdmin){
         return res.status(403).send({message: "forbidden access!"})
     }
-
     next();
 };
 
 const verifyInstructor = async (req, res, next) => {
-    const email = req.decoded.email;
-    const query ={email: email};
-
-    const user = await User.findOne(query);
-    const isInstructor = user?.role == 'instructor';
-
-    if(!isInstructor){
-        return res.status(403).send({message: "forbidden access!"})
+    try {
+        const email = req.decoded.email;
+        const user = await User.findOne({ email: email }, 'role _id');
+        if (!user) {
+            return res.status(404).send({ message: "User not found!" });
+        }
+        const isInstructor = user.role === 'instructor';
+        if (!isInstructor) {
+            return res.status(403).send({ message: "Forbidden access!" });
+        }
+        req.decoded = { email, userId: user._id };
+        next();
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ message: "Internal server error!" });
     }
-
-    next();
 };
 
 const verifySubmin = async (req, res, next) => {

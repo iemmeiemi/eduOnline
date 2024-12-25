@@ -27,12 +27,23 @@ const getAllUsers = async (user) => {
 
 const getOneUserByIdFromOther = async (id) => {
     try {
-        const createdUser = await User.findById(id)
-            .select('-__v -role -wishlist'); // Loại bỏ password, version key, role và wishlist
-        if (!createdUser) {
+        const user = await User.findById(id)
+            .select('-__v -wishlist -history'); // Loại bỏ password, version key, role và wishlist
+        if (!user) {
             throw new Error('User not found');
         }
-        return createdUser;
+        let roleUser = null;
+        switch (user.role) {
+            case 'instructor':
+                roleUser = await Instructor.findById(id);
+                break;
+            case 'student':
+                roleUser = await Student.findById(id);
+                break;
+            default:
+                break;
+        }
+        return {user, roleUser};
     } catch (err) {
         throw new Error(err.message); 
     }
@@ -62,7 +73,7 @@ const getOneUserByIdFromOwner = async (id) => {
 //     }
 // };
 
-const updateUser = async (user) => {
+const updateUser = async (data) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(user.id, user, { new: true, runValidators: true });
         if (!updatedUser) {
@@ -71,6 +82,40 @@ const updateUser = async (user) => {
         return updatedUser;
     } catch (err) {
         throw new Error(err.message); 
+    }
+};
+
+const updateRoleUser = async (data) => {
+    try {
+        let updatedUser;
+
+        switch (data.role) {
+            case 'instructor':
+                updatedUser = await Instructor.findByIdAndUpdate(
+                    data.id,
+                    { ...data }, // Cập nhật dữ liệu
+                    { new: true, runValidators: true } // Trả về bản ghi mới và kiểm tra dữ liệu
+                );
+                if (!updatedUser) {
+                    throw new Error("Instructor not found");
+                }
+                break;
+
+            default: // Mặc định là role "student"
+                updatedUser = await Student.findByIdAndUpdate(
+                    data.id,
+                    { ...data },
+                    { new: true, runValidators: true }
+                );
+                if (!updatedUser) {
+                    throw new Error("Student not found");
+                }
+                break;
+        }
+
+        return updatedUser; // Trả về người dùng đã được cập nhật
+    } catch (err) {
+        throw new Error(`Failed to update user: ${err.message}`);
     }
 };
 
@@ -98,6 +143,9 @@ const makeAdmin = async (id) => {
         throw new Error(err.message);
     }
 };
+///
+
+
 
 module.exports = {
     getOneUserByEmail,
@@ -105,6 +153,7 @@ module.exports = {
     getOneUserByIdFromOwner,
     getOneUserByIdFromOther,
     updateUser,
+    updateRoleUser,
     banUser,
     makeAdmin,
 };

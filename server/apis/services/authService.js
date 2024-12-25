@@ -1,41 +1,75 @@
 const { generateAccessToken } = require('../middlewares/token');
 const User = require('../models/User');
+const Student = require('../models/Student');
+const Instructor = require('../models/Instructor');
 
 const refreshAccessToken = async (data) => {
     try {
-        const user = await User.findOne({ email: data.email }); 
+        const user = await User.findOne({ email: data.email });
         if (!user) {
-            throw new Error("User not found");
+            throw new Error('User not found');
         }
-        const accessToken = generateAccessToken(user._id, user.email, user.role);
+        const accessToken = generateAccessToken(
+            user._id,
+            user.email,
+            user.role
+        );
         return { accessToken: accessToken, user };
     } catch (err) {
         throw new Error(err.message);
     }
 };
 
+const create = async (role, id) => {
+    try {
+        switch (role) {
+            case 'student':
+                const student = Student.create({ userRef: id });
+                return student;
+            case 'instructor':
+                const instructor = Instructor.create({ userRef: id });
+                return instructor;
+            default:
+                return null;
+        }
+    } catch (error) {
+        console.log(error.message);
+        throw new Error(error);
+    }
+};
+
 const register = async (data) => {
     try {
         // Kiểm tra nếu user đã tồn tại
-        const existingUser = await User.findOne({ email: data.user.email }).select('-role -__v');
+        const existingUser = await User.findOne({
+            email: data.user.email,
+        }).select('-role -__v');
         if (existingUser) {
-            throw new Error("User with this email already exists, please Sign in");
+            throw new Error(
+                'User with this email already exists, please Sign in'
+            );
         }
         // Tạo người dùng mới
-        const user = await User.create(data.user).select('-role -__v');
+        const user = await User.create(data.user);
         if (!user) {
-            throw new Error("Error creating user");
+            throw new Error('Error creating user');
         }
-        return user; 
+
+        const userDetail = await create(data.user.role, user._id);
+
+        return {user, userDetail};
     } catch (err) {
-        throw new Error(err.message || "An error occurred during registration");
+        console.log(err);
+        throw new Error(err.message || 'An error occurred during registration');
     }
 };
 
 const registerGoogle = async (data) => {
     try {
         // Kiểm tra nếu user đã tồn tại
-        const existingUser = await User.findOne({ email: data.user.email }).select('-role -__v');
+        const existingUser = await User.findOne({
+            email: data.user.email,
+        }).select('-role -__v');
         if (existingUser) {
             const method = existingUser.authMethod;
             if (method === 'gg') {
@@ -45,21 +79,20 @@ const registerGoogle = async (data) => {
             }
         }
         // Tạo người dùng mới
-        const user = await User.create(data.user).select('-role -__v');
+        const user = await User.create(data.user);
         if (!user) {
-            throw new Error("db");
+            throw new Error('db');
         }
-        return user; 
+        const userDetail = create(data.user.role, user._id);
+        return {user, userDetail};
     } catch (err) {
-        throw new Error(err.message || "An error occurred during registration");
+        console.log(err);
+        throw new Error(err.message || 'An error occurred during registration');
     }
 };
-
 
 module.exports = {
     refreshAccessToken,
     register,
     registerGoogle,
-    
-
 };

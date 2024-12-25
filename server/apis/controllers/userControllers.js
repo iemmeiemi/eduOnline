@@ -58,6 +58,21 @@ const updateUser = async (req, res) => {
 };
 
 
+const updateRoleUser = async (req, res) => {
+    try {
+        const user = req.body.user;
+        const role = req.param.role;
+        const accesser = req.decoded._id;
+        if(user._id !== accesser) {
+            handleResponse(res, null, 'Forbiddent access', 400);
+        }
+        const response = await service.updateUser({user, role});
+        handleResponse(res, response, 'Updated');
+    } catch (error) {
+        handleResponse(res, null, error.message, 500);
+    }
+};
+
 
 //admin func
 const banUser = async (req, res) => {
@@ -76,7 +91,7 @@ module.exports = {
     getOneUserByEmail,
     getAllUsers,
     getOneUserById,
-
+    updateRoleUser,
     updateUser,
     banUser,
 

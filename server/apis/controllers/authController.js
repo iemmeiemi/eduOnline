@@ -35,9 +35,7 @@ const registerGoogle = async (req, res) => {
 
 const refreshAccessToken = async (req, res) => {
     try {
-        console.log("haha");
         const { email } = req.body;
-        console.log(email);
         if (!email) {
             return handleResponse(res, null, "Email is required", 400);
         }
@@ -46,7 +44,6 @@ const refreshAccessToken = async (req, res) => {
         }
         const data = { email };
         const response = await service.refreshAccessToken(data);
-        //console.log(response.useruser);
         handleResponse(res, response, 'Token refreshed successfully', 200);
     } catch (error) {
         handleResponse(res, null, error.message, 500);

@@ -9,6 +9,10 @@ router.get('/', userControllers.getAllUsers);
 router.get('/:id', userControllers.getOneUserById);
 router.get('/:email', userControllers.getOneUserByEmail);
 
+router.put('/', verifyToken, userControllers.updateUser);
+router.put('/:role', verifyToken, userControllers.updateRoleUser);
+
+
 // router.get('/search', userControllers.searchUser);
 router.put('/', verifyToken, userControllers.updateUser);
 

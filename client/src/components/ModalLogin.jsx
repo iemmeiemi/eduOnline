@@ -38,7 +38,6 @@ const ModalLogin = () => {
       document.getElementById("my_modal_5").close();
     } catch (error) {
       toast.error( error.message); 
-      console.log(error)
     }
   };
   

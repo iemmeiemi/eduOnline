@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
+const timeSlotSchema = require('./children/TimeSlot');
 
 const classInstanceSchema = new Schema({
     name: String,
@@ -14,11 +15,6 @@ const classInstanceSchema = new Schema({
         default: null,
     },
     timeSlots: [timeSlotSchema], // Mảng chứa các khoảng thời gian học
-    class: {
-        type: mongoose.Schema.Types.ObjectId, //?
-        ref: 'Class',
-        required: true,
-    },
     createdAt: {
         type: Date,
         default: Date.now,

@@ -73,18 +73,14 @@ const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const userInfo = {
+      const info = {
         email: result.user.email,
         name: result.user.displayName,
         photoURL: result.user.photoURL,
         authMethod: "gg",
+        //role: ,
       };
-      const response = await request(
-        "POST",
-        "api/auth/register-google",
-        userInfo
-      );
-      setUserInfo(response.data);
+      await request("POST", "api/auth/register-google", info);
       return "Done!";
     } catch (error) {
       const user = auth.currentUser;
@@ -133,21 +129,23 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        const userInfo = { email: currentUser.email };
+        const info = { email: currentUser.email };
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+        await delay(2000);
         try {
-          // Gọi API bất đồng bộ để làm mới access token
           const response = await request(
             "POST",
             "api/auth/refresh-access-token",
-            userInfo
+            info
           );
-          console.log("access: " + response.data.accessToken);
-          if (response.data && response.data.accessToken) {
-            localStorage.setItem("access-token", response.data.accessToken);
+          if (response.data) {
+            setUserInfo(response.data.data.user);
+            localStorage.setItem("access-token", response.data.data.accessToken);
           }
         } catch (error) {
           localStorage.removeItem("access-token");
         }
+        
       } else {
         localStorage.removeItem("access-token");
       }
@@ -162,6 +160,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    userInfo,
     loading,
     signUpWithEmailAndPassword,
     login,

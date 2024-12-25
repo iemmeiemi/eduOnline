@@ -5,6 +5,7 @@ import Menu from "../pages/Menu/Menu";
 
 import ErrorPage from "../pages/Error";
 import SignUp from "../pages/Auth/SignUp";
+import CreateClass from "../pages/Class/CreateClass";
 
     const routers = createBrowserRouter([
         {
@@ -19,6 +20,10 @@ import SignUp from "../pages/Auth/SignUp";
                 {
                     path: "/class",
                     element: <Menu />
+                },
+                {
+                    path: "/class-create",
+                    element: <CreateClass />
                 },
                 
             ]

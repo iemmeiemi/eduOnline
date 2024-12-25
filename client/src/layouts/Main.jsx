@@ -21,7 +21,7 @@ const Main = () => {
         draggable
         pauseOnHover
         theme="light"
-        style={{ marginTop: "30px" }} // Thêm margin-top
+        style={{ marginTop: "40px" }} // Thêm margin-top
       />
       <Navbar />
       <Outlet />

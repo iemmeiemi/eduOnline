@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const timeSlotSchema = new mongoose.Schema({
   day: {
-    type: String, // Ví dụ: 'Thứ Hai', 'Thứ Ba', ...
+    type: String,
+    enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
     required: true
   },
   startTime: {

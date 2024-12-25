@@ -6,14 +6,23 @@ const rateSchema = require('./children/Rate');
 const classSchema = new Schema({
     name: String,
     des: String,
-    photoURL: String,
-    category: {
-        type: mongoose.Schema.Types.ObjectId, //?
-        ref: 'Category',
-        required: true,
+    photoURL:  [{ type: String }],
+    expectedDuration: {
+        type: String,
+        default: "unknown",
     },
-    times: Number, //the class instances
-    students: Number, //the total student attend in
+    category: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Category', // Tham chiếu đến model Category
+    }],
+    instances: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'ClassInstance', 
+    }],
+    students: {
+        type: Number,
+        default: 0,
+    }, //the total student attended in
     rate: Number,
     rates: {
         type: [rateSchema], // Mảng tài liệu con
