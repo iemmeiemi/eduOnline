@@ -46,6 +46,7 @@ const refreshAccessToken = async (req, res) => {
         const response = await service.refreshAccessToken(data);
         handleResponse(res, response, 'Token refreshed successfully', 200);
     } catch (error) {
+        console.log(error.message);
         handleResponse(res, null, error.message, 500);
     }
 };

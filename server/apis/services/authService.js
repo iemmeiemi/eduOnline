@@ -9,12 +9,23 @@ const refreshAccessToken = async (data) => {
         if (!user) {
             throw new Error('User not found');
         }
+        let roleUser = null;
+        switch (user.role) {
+            case 'instructor':
+                roleUser = await Instructor.find({userRef: user._id});
+                break;
+            case 'student':
+                roleUser = await Student.find({userRef: user._id});
+                break;
+            default:
+                break;
+        }
         const accessToken = generateAccessToken(
             user._id,
             user.email,
             user.role
         );
-        return { accessToken: accessToken, user };
+        return { accessToken: accessToken, user, role: roleUser[0] };
     } catch (err) {
         throw new Error(err.message);
     }
@@ -57,7 +68,7 @@ const register = async (data) => {
 
         const userDetail = await create(data.user.role, user._id);
 
-        return {user, userDetail};
+        return { user, userDetail };
     } catch (err) {
         console.log(err);
         throw new Error(err.message || 'An error occurred during registration');
@@ -84,7 +95,7 @@ const registerGoogle = async (data) => {
             throw new Error('db');
         }
         const userDetail = create(data.user.role, user._id);
-        return {user, userDetail};
+        return { user, userDetail };
     } catch (err) {
         console.log(err);
         throw new Error(err.message || 'An error occurred during registration');

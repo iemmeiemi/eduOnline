@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const gpaSchema = require('./children/GPA');
 
-
 // schema model
 const studentSchema = new Schema({
     userRef: {
@@ -10,14 +9,18 @@ const studentSchema = new Schema({
         ref: 'User', // Tên model của người dùng
         required: true,
     },
-    classCount: Number, //classes that that student attended in
+    enrolledClasses: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'Class',
+        default: [],
+    }, //classes that that student attended in
     gpaRecord: {
-        type: [gpaSchema], 
+        type: [gpaSchema],
         default: [],
     },
     category: {
         type: mongoose.Schema.Types.ObjectId, //?
-        ref: 'Category', 
+        ref: 'Category',
     },
 });
 

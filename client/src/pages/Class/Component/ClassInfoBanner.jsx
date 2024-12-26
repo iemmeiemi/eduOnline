@@ -1,5 +1,6 @@
 import React from "react";
 import useCategory from "../../../hooks/useCategory";
+import CreateInstanceModal from "./CreateInstanceModal";
 
 const ClassInfoBanner = ({ classDetail, isOwner, instructor }) => {
   const { categories = [], isLoading } = useCategory();
@@ -7,7 +8,9 @@ const ClassInfoBanner = ({ classDetail, isOwner, instructor }) => {
   const handleEditClass = () => {};
   const handleCreateInstance = () => {};
 
-  const handleJoinClass = () => {};
+  const handleJoinClass = () => {
+    
+  };
 
   return (
     <div className="flex flex-col justify-stretch items-center gap-8 sm:flex-row">
@@ -25,9 +28,10 @@ const ClassInfoBanner = ({ classDetail, isOwner, instructor }) => {
                 <button className="btn bg-orange" onClick={handleEditClass}>
                   Edit Class
                 </button>
-                <button className="btn bg-orange" onClick={handleCreateInstance}>
+                <button className="btn bg-orange" onClick={()=>document.getElementById('my_modal_4').showModal()}>
                   Create Instance
                 </button>
+                <CreateInstanceModal classDetail={classDetail}/>
               </div>
             ) : (
               <div className="flex flex-col gap-5">

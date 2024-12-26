@@ -8,11 +8,11 @@ const classInstanceSchema = new Schema({
     //photoURL: String,
     pendingStudents: {
         type: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-        default: null,
+        default: [],
     }, // Student chưa được accept
     students: {
         type: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
-        default: null,
+        default: [],
     },
     timeSlots: [timeSlotSchema], // Mảng chứa các khoảng thời gian học
     status: {

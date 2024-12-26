@@ -18,7 +18,7 @@ const ClassDetail = () => {
       try {
         const response = await request("GET", `/api/class/${id}`);
         setClassDetail(response.data.data.cl);
-        setClassInstance(response.data.data.classInstance);
+        setClassInstance(response.data.data.cl.instances);
         setInstructor(response.data.data.cl.instructor);
         setIsOwner(response.data.data.isOwner);
       } catch (err) {
@@ -46,7 +46,7 @@ const ClassDetail = () => {
           {isOwner ? (
             <ClassInstance classInstance={classInstance} />
           ) : (
-            <ClassInstanceView classInstance={classInstance} />
+            <ClassInstanceView classInstance={classInstance} classDetail={classDetail} />
           )}
         </div>
         <div className="w-2/5 flex flex-col justify-center items-center">Comment Section</div>

@@ -35,11 +35,14 @@ const createClass = async (req, res) => {
 
 const createClassInstance = async (req, res) => {
     try {
-        const { classId, name, des } = req.body;
-        if (!classId || !name || !des) {
+        const { idClass, instance } = req.body;
+        if (!idClass || !instance) {
             return handleResponse(res, null, 'Missing required fields', 400);
         }
-        const response = await service.createClass(req.body);
+        const data = {
+            idClass, classInstance : instance
+        }
+        const response = await service.createClassInstance(data);
         handleResponse(res, response);
     } catch (error) {
         console.error(error); // Ghi lại lỗi để theo dõi
@@ -82,10 +85,68 @@ const getOneClass = async (req, res) => {
     }
 };
 
+const getOneClassInstance = async (req, res) => {
+    try {
+        const idUser = req.decoded.id;
+        const idInstance = req.params.id;
+        const data = { idUser, idInstance };
+
+        const response = await service.getOneClassInstance(data);
+        handleResponse(res, response);
+    } catch (error) {
+        console.error(error);
+        handleResponse(res, null, error.message || 'Internal server error', 500);
+    }
+};
+
+
+const joinClass = async (req, res) => {
+    try {
+        const idUser = req.decoded.id;
+        const idClassInstance = req.params.id;
+        const {idClass, idStudent} = req.body;
+        console.log(idUser, idClass, idClassInstance, idStudent );
+        if(!idUser || !idClass || !idClassInstance || !idStudent) {
+            return handleResponse(res, null, 'Missing required fields', 400);
+        }
+        const data = { idUser, idClass, idClassInstance, idStudent};
+
+        const response = await service.joinClass(data);
+        handleResponse(res, response);
+    } catch (error) {
+        console.error(error);
+        handleResponse(res, null, error.message || 'Internal server error', 500);
+    }
+};
+
+const acceptStudent = async (req, res) => {
+    try {
+        const idUser = req.decoded.userId;
+        const {idStudent, idClassInstance} = req.body;
+        console.log(idUser, idStudent, idClassInstance);
+
+        if(!idUser || !idClassInstance || !idStudent) {
+            return handleResponse(res, null, 'Missing required fields', 400);
+        }
+        const data = { idUser, idClassInstance, idStudent};
+
+        const response = await service.acceptStudent(data);
+        handleResponse(res, response);
+    } catch (error) {
+        console.error(error);
+        handleResponse(res, null, error.message || 'Internal server error', 500);
+    }
+};
+
 
 module.exports = {
     createClass,
     getAllClass,
     getOneClass,
+    createClassInstance,
+    joinClass,
+    acceptStudent,
+    getOneClassInstance,
+    
 
 };

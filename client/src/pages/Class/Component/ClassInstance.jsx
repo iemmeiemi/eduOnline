@@ -1,57 +1,15 @@
 import React from "react";
 import { GrStatusGoodSmall } from "react-icons/gr";
-
-const ex = [
-  {
-    name: "Lớp học Toán",
-    des: "Lớp học cho học sinh cấp 2",
-    pendingStudents: [],
-    students: [],
-    timeSlots: [
-      {
-        day: "Monday",
-        startTime: "10:00",
-        endTime: "12:00",
-      },
-      {
-        day: "Wednesday",
-        startTime: "10:00",
-        endTime: "12:00",
-      },
-    ],
-    status: 1,
-    createdAt: "2024-12-26T00:00:00Z",
-    endedAt: null,
-    deletedAt: null,
-  },
-  {
-    name: "Lớp học Lý",
-    des: "Lớp học cho học sinh cấp 3",
-    pendingStudents: [],
-    students: [],
-    timeSlots: [
-      {
-        day: "Tuesday",
-        startTime: "10:00",
-        endTime: "12:00",
-      },
-      {
-        day: "Thursday",
-        startTime: "10:00",
-        endTime: "12:00",
-      },
-    ],
-    status: 1,
-    createdAt: "2024-12-26T00:00:00Z",
-    endedAt: null,
-    deletedAt: null,
-  },
-];
+import useAxios from "../../../hooks/useAxios";
+import useAuth from "../../../hooks/useAuth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const ClassInstance = ({ classInstance }) => {
   return (
-    <div className="overflow-x-auto  w-full ">
-      <table className="table w-full ">
+    <div className="overflow-x-auto w-full">
+      <table className="table w-full">
         {/* head */}
         <thead>
           <tr>
@@ -65,33 +23,31 @@ const ClassInstance = ({ classInstance }) => {
           </tr>
         </thead>
         <tbody>
-          {classInstance.length > 0 ? classInstance.map((instance, i) => {
-            return (
-              // Thêm return ở đây
-              <tr key={i}>
+          {classInstance.length > 0 ? (
+            classInstance.map((instance, i) => (
+              <tr key={instance._id}>
                 <th>{i + 1}</th>
                 <td>{instance.name}</td>
                 <td>
-                  {instance.timeSlots.length > 0 ? ( // Kiểm tra độ dài mảng
+                  {instance.timeSlots.length > 0 ? (
                     instance.timeSlots.map((t, index) => (
-                      <div key={index}>
-                        {" "}
-                        {/* Thêm key cho từng phần tử */}
-                        <p>
-                          <span className="text-dark-blue font-bold">
-                            {t.day}
-                          </span>{" "}
-                          {t.startTime} - {t.endTime}
-                        </p>
-                        <br />
+                      <div key={index} className="mb-2">
+                        <span className="text-dark-blue font-bold">
+                          {t.day}
+                        </span>{" "}
+                        {t.startTime} - {t.endTime}
                       </div>
                     ))
                   ) : (
-                    <p>There is no Time Slot Available</p>
+                    <div>There is no Time Slot Available</div>
                   )}
                 </td>
-                <td>{instance.pendingStudents.length}</td>
-                <td>{instance.students.length}</td>
+                <td>
+                  {instance.pendingStudents
+                    ? instance.pendingStudents.length
+                    : 0}
+                </td>
+                <td>{instance.students ? instance.students.length : 0}</td>
                 <td>
                   <GrStatusGoodSmall
                     className={
@@ -100,21 +56,57 @@ const ClassInstance = ({ classInstance }) => {
                   />
                 </td>
                 <td>
-                  <a href="" className="btn bg-light-blue">Detail</a>
+                  <Link
+                    to={`/class/instance/${instance._id}`}
+                    state= {instance}
+                    className="btn bg-light-blue" > Detail
+                  </Link>
                 </td>
               </tr>
-            );
-          }) : <p className="text-center text-red-600">There is no class open</p> }
+            ))
+          ) : (
+            <tr>
+              <td colSpan="7" className="text-center text-red-600">
+                There is no class open
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
   );
 };
 
-const ClassInstanceView = ({ classInstance }) => {
+const ClassInstanceView = ({ classInstance, classDetail }) => {
+  const { userRoleInfo, userInfo } = useAuth();
+  const request = useAxios();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
+  const handleRegisterToInstance = (id) => {
+    console.log("userRole :", userRoleInfo?._id);
+    const idClass = classDetail._id;
+    const packageData = {
+      idClass: classDetail._id,
+      idStudent: userRoleInfo?._id, // Chú ý dấu phẩy sau mỗi cặp khóa-giá trị
+    };
+
+    request("POST", "/api/class/join/" + id, packageData)
+      .then((res) => {
+        toast.success("Join Successfully!");
+        navigate("/class/" + classDetail._id, { replace: true });
+      })
+      .catch((error) => {
+        console.error("Error join class:", error.message);
+        toast.error("Failed to join class: " + error.message);
+      });
+  };
+
   return (
-    <div className="overflow-x-auto  w-full ">
-      <table className="table w-full ">
+    <div className="overflow-x-auto w-full">
+      <table className="table w-full">
         {/* head */}
         <thead>
           <tr>
@@ -126,27 +118,23 @@ const ClassInstanceView = ({ classInstance }) => {
           </tr>
         </thead>
         <tbody>
-          {classInstance.length > 0 ? (classInstance.map((instance, i) => {
-            return (
-              <tr key={i}>
+          {classInstance.length > 0 ? (
+            classInstance.map((instance, i) => (
+              <tr key={instance._id}>
                 <th>{i + 1}</th>
                 <td>{instance.name}</td>
                 <td>
-                  {instance.timeSlots.length > 0 ? ( // Kiểm tra độ dài mảng
+                  {instance.timeSlots.length > 0 ? (
                     instance.timeSlots.map((t, index) => (
-                      <div key={index}>
-                        {" "}
-                        <p>
-                          <span className="text-dark-blue font-bold">
-                            {t.day}
-                          </span>{" "}
-                          {t.startTime} - {t.endTime}
-                        </p>
-                        <br />
+                      <div key={index} className="mb-2">
+                        <span className="text-dark-blue font-bold">
+                          {t.day}
+                        </span>{" "}
+                        {t.startTime} - {t.endTime}
                       </div>
                     ))
                   ) : (
-                    <p>There is no Time Slot Available</p>
+                    <div>There is no Time Slot Available</div>
                   )}
                 </td>
                 <td>
@@ -157,11 +145,33 @@ const ClassInstanceView = ({ classInstance }) => {
                   />
                 </td>
                 <td>
-                  <a href="" className="btn bg-light-blue ">Register</a>
+                  {userRoleInfo?._id !== 0 &&
+                  instance.pendingStudents?.includes(userInfo?._id) ? (
+                    <button className="btn bg-gray-200">Registered</button>
+                  ) : instance.students?.includes(userInfo?._id) ? (
+                    <a className="btn btn-orange text-white" href="">
+                      View
+                    </a>
+                  ) : (
+                    // Nếu không, hiển thị nút Đăng Ký
+                    <button
+                      className="btn bg-light-blue"
+                      onClick={() => handleRegisterToInstance(instance._id)}
+                    >
+                      Register
+                    </button>
+                  )}
+                  {console.log("pending: ", instance)}
                 </td>
               </tr>
-            );
-          })): <p className="text-center text-red-600">There is no Class opening</p> }
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center text-red-600">
+                There is no Class opening
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

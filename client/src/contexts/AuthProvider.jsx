@@ -22,7 +22,7 @@ const googleProvider = new GoogleAuthProvider();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-
+  const [userRoleInfo, setUserRoleInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const request = useAxios();
 
@@ -140,6 +140,8 @@ const AuthProvider = ({ children }) => {
           );
           if (response.data) {
             setUserInfo(response.data.data.user);
+            setUserRoleInfo(response.data.data.role);
+            console.log(response.data.data.role);
             localStorage.setItem("access-token", response.data.data.accessToken);
           }
         } catch (error) {
@@ -161,6 +163,7 @@ const AuthProvider = ({ children }) => {
   const authInfo = {
     user,
     userInfo,
+    userRoleInfo,
     loading,
     signUpWithEmailAndPassword,
     login,

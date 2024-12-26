@@ -8,6 +8,7 @@ import SignUp from "../pages/Auth/SignUp";
 import CreateClass from "../pages/Class/CreateClass";
 import OwnerProfile from "../pages/Profile/OwnerProfile";
 import ClassDetail from "../pages/Class/ClassDetail";
+import ClassInstanceDetail from "../pages/Class/ClassInstanceDetail";
 
 const routers = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const routers = createBrowserRouter([
       {
         path: "/class/:id",
         element: <ClassDetail />,
+      },
+      {
+        path: "/class/instance/:id",
+        element: <ClassInstanceDetail />,
       },
     ],
   },
