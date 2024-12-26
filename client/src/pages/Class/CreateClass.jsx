@@ -3,6 +3,8 @@ import { useForm, Controller } from "react-hook-form";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import useAxios from "../../hooks/useAxios";
 import useAuth from "../../hooks/useAuth";
@@ -20,7 +22,6 @@ const CreateClass = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
   const animatedComponents = makeAnimated();
 
   const categoriesOptions =
@@ -58,7 +59,7 @@ const CreateClass = () => {
     })
       .then((response) => {
         toast.success("Class created successfully!");
-        //navigate(from, { replace: true });
+        navigate("/class/"+response.data.data._id, { replace: true });
       })
       .catch((error) => {
         console.error("Error creating class:", error.message);
@@ -169,6 +170,7 @@ const CreateClass = () => {
               type="file"
               accept="image/*"
               multiple
+              className="file-input w-full max-w-xs"
               onChange={onImageChange}
             />
           </div>

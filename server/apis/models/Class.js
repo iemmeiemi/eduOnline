@@ -27,7 +27,7 @@ const classSchema = new Schema({
     rates: {
         type: [rateSchema], // Mảng tài liệu con
         default: [], // Gán giá trị mặc định là mảng rỗng
-    },
+    },  
     instructor: {
         type: mongoose.Schema.Types.ObjectId, // Liên kết với ID của người dùng
         ref: 'User', // Tên model của người dùng

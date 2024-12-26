@@ -7,7 +7,7 @@ const createClass = async (req, res) => {
         const userId = req.decoded.userId;
         const { name, des, expectedDuration, category } = req.body;
         if (!name || !des || !expectedDuration || !category) {
-            return handleResponse(res, null, "Missing required fields", 400);
+            return handleResponse(res, null, 'Missing required fields', 400);
         }
         const images = req.files ? req.files.map((file) => file.path) : [];
 
@@ -16,7 +16,7 @@ const createClass = async (req, res) => {
             name,
             des,
             expectedDuration,
-            category: JSON.parse(category), 
+            category: JSON.parse(category),
             photoURL: images,
         };
 
@@ -52,6 +52,40 @@ const createClassInstance = async (req, res) => {
     }
 };
 
+const getAllClass = async (req, res) => {
+    try {
+        const { page, sort, filter, order, limit } = req.query;
+        const pageNumber = page ? parseInt(page, 10) : 1;
+        const orderNum = order === '-1' ? -1 : 1; 
+
+        const data = { pageNumber, sort, filter, orderNum };
+
+        const response = await service.getAllClass(data);
+        handleResponse(res, response);
+    } catch (error) {
+        console.error(error);
+        handleResponse(res, null, error.message || 'Internal server error', 500);
+    }
+};
+
+const getOneClass = async (req, res) => {
+    try {
+        const idUser = req.decoded.id;
+        const idClass = req.params.id;
+        const data = { idUser, idClass };
+
+        const response = await service.getOneClass(data);
+        handleResponse(res, response);
+    } catch (error) {
+        console.error(error);
+        handleResponse(res, null, error.message || 'Internal server error', 500);
+    }
+};
+
+
 module.exports = {
     createClass,
+    getAllClass,
+    getOneClass,
+
 };

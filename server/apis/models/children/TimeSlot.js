@@ -7,13 +7,14 @@ const timeSlotSchema = new mongoose.Schema({
     required: true
   },
   startTime: {
-    type: Date, // Thời gian bắt đầu
+    type: String, 
     required: true
   },
   endTime: {
-    type: Date, // Thời gian kết thúc
+    type: String, 
     required: true
-  }
+  },
+  
 });
 
 module.exports = timeSlotSchema;

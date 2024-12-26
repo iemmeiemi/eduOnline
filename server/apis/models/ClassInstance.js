@@ -5,7 +5,7 @@ const timeSlotSchema = require('./children/TimeSlot');
 const classInstanceSchema = new Schema({
     name: String,
     des: String,
-    photoURL: String,
+    //photoURL: String,
     pendingStudents: {
         type: [{ type: Schema.Types.ObjectId, ref: 'Student' }],
         default: null,
@@ -15,6 +15,10 @@ const classInstanceSchema = new Schema({
         default: null,
     },
     timeSlots: [timeSlotSchema], // Mảng chứa các khoảng thời gian học
+    status: {
+        type: Boolean,
+        default: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

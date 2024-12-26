@@ -1,10 +1,23 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const verify = (req, res, next) => {
+    const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null;
+    if (!token) {
+        req.decoded = { id: null };
+        return next(); // Tiếp tục đến middleware tiếp theo
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).send({ message: "Token is invalid!" });
+        }
+        req.decoded = decoded;
+        next();
+    });
+};
 
 const verifyToken = (req, res, next) => {
-    console.log('Uploaded Files:', req.files);
-
     if(!req.headers.authorization) {
         return res.status(400).send({message: "unauthorize"})
     }
@@ -67,6 +80,7 @@ const verifySubmin = async (req, res, next) => {
 
 
 module.exports = {
+    verify,
     verifyToken,
     verifyAdmin,
     verifySubmin,
